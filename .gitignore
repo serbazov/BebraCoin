@@ -1,0 +1,16 @@
+node_modules
+.env
+coverage
+coverage.json
+typechain
+typechain-types
+credentials.json
+accounts
+teset.py
+transferer.py
+balanceFeed.js
+dataTranslator.js
+
+# Hardhat files
+cache
+artifacts
