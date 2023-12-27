@@ -1,8 +1,6 @@
-# Sample Hardhat Project
+# BebraCoin
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
-
-Try running some of the following tasks:
+Bebra coin is a collaterised rebase stablecoin backed by quasi delta neutral strategies on velodrome/Sonne.
 
 ```shell
 npx hardhat help
