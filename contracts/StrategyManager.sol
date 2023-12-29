@@ -49,7 +49,6 @@ contract StrategyManager is Ownable, Bebra {
         }
         require(fullWeght == 1e18, "wrong strategies weights");
         strategiesCount = _strategiesCount;
-        console.log(_strategiesCount);
         for (uint i = 0; i < _strategiesCount; i++) {
             strategies.push(IPositionManager(_strategiesBatch[i]));
             strategiesWeights.push(_strategiesWeight[i]);
@@ -81,7 +80,6 @@ contract StrategyManager is Ownable, Bebra {
             address(this),
             amount
         );
-        console.log(IERC20(USDC).balanceOf(address(this)));
         (uint pooledAmount1, uint totalShares1) = _getDataForRebase();
         for (uint i = 0; i < strategiesCount; i++) {
             strategies[i].openPosition((amount * strategiesWeights[i]) / 1e18);

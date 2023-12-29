@@ -5,6 +5,7 @@ pragma abicoder v2;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./Icomptroller.sol";
 import "./IsoToken.sol";
 import "./IveloRouter.sol";
@@ -17,7 +18,9 @@ import "./IPositionManager.sol";
 
 import "hardhat/console.sol";
 
-contract DNSPositionManager is Ownable, IPositionManager {
+contract DNSPositionManager is Ownable, IPositionManager, AccessControl {
+    bytes32 public constant STRATEGIES_MANAGER_ROLE =
+        keccak256("STRATEGIES_MANAGER_ROLE");
     IERC20 _initToken;
     IPool _poolToken;
     IsoToken _soToken1;
@@ -88,6 +91,8 @@ contract DNSPositionManager is Ownable, IPositionManager {
         _token1 = IERC20(_poolToken.token0());
         _token2 = IERC20(_poolToken.token1());
         listSoToken();
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _setRoleAdmin(STRATEGIES_MANAGER_ROLE, DEFAULT_ADMIN_ROLE);
     }
 
     function setStrategyParams(
@@ -118,12 +123,13 @@ contract DNSPositionManager is Ownable, IPositionManager {
         Icomptroller(addresses.comptroller).enterMarkets(cTokens);
     }
 
-    function openPosition(uint initialAmount) external {
+    function openPosition(
+        uint initialAmount
+    ) external onlyRole(STRATEGIES_MANAGER_ROLE) {
         require(
             _initToken.balanceOf(msg.sender) >= initialAmount,
             "your balance not enough"
         );
-        console.log("opening position with balance", initialAmount);
         SafeERC20.safeTransferFrom(
             _initToken,
             msg.sender,
@@ -390,7 +396,9 @@ contract DNSPositionManager is Ownable, IPositionManager {
         }
     }
 
-    function closePosition(uint sharesPercentage) external {
+    function closePosition(
+        uint sharesPercentage
+    ) external onlyRole(STRATEGIES_MANAGER_ROLE) {
         _removeLiquidity(sharesPercentage);
         AccountSnapshot memory accountSnapshot0 = getAccountSnapshot();
         _checkForAdditionalSwap(accountSnapshot0, sharesPercentage);
@@ -490,13 +498,8 @@ contract DNSPositionManager is Ownable, IPositionManager {
         );
         IGauge _gauge = IGauge(addresses.poolTokenGauge);
         address veloToken = _gauge.rewardToken();
-        console.log("balanceOf", _gauge.balanceOf(address(this)));
-        console.log("earned", _gauge.earned(address(this)));
-        console.log("veloToken", veloToken);
         _gauge.getReward(address(this));
         uint veloBalance = IERC20(veloToken).balanceOf(address(this));
-        console.log("velo balance", veloBalance);
-        console.log("sonne balance", sonneBalance);
         IERC20(addresses.SONNEaddress).approve(
             address(addresses.veloRouter),
             sonneBalance

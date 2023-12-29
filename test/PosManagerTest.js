@@ -2,6 +2,8 @@
   be shure, to hardhat-config is properly configured
   run: npx hardhat test
 */
+const { keccak256 } = require("@ethersproject/keccak256");
+const { toUtf8Bytes } = require("@ethersproject/strings");
 const {
   time,
   loadFixture,
@@ -70,7 +72,18 @@ describe("delta neutral strategy position manager", function () {
       ]
     );
     await contract.waitForDeployment();
-
+    await contract
+      .connect(owner)
+      .grantRole(
+        keccak256(toUtf8Bytes("STRATEGIES_MANAGER_ROLE")),
+        owner.address
+      );
+    await contract
+      .connect(owner)
+      .grantRole(
+        keccak256(toUtf8Bytes("STRATEGIES_MANAGER_ROLE")),
+        otherAccount.address
+      );
     // get some WETH to supply
     const WETH = new ethers.Contract(WETHaddress, WETHabi);
     await WETH.connect(owner).deposit({ value: ethers.parseEther("10") });
@@ -289,6 +302,12 @@ describe("delta neutral strategy position manager", function () {
           contract1.target,
           ethers.parseUnits("100", 6)
         );
+        await contract1
+          .connect(owner)
+          .grantRole(
+            keccak256(toUtf8Bytes("STRATEGIES_MANAGER_ROLE")),
+            owner.address
+          );
         await expect(
           await contract1
             .connect(owner)

@@ -2,6 +2,8 @@
   be shure, to hardhat-config is properly configured
   run: npx hardhat test
 */
+const { keccak256 } = require("@ethersproject/keccak256");
+const { toUtf8Bytes } = require("@ethersproject/strings");
 const {
   time,
   loadFixture,
@@ -97,6 +99,18 @@ describe("Bebra Coin", function () {
     const strategyManager = await ethers.getContractFactory("StrategyManager");
     const strategyManagercontract = await strategyManager.deploy();
     await strategyManagercontract.waitForDeployment();
+    await posManagercontract
+      .connect(owner)
+      .grantRole(
+        keccak256(toUtf8Bytes("STRATEGIES_MANAGER_ROLE")),
+        strategyManagercontract.target
+      );
+    await posManagercontract1
+      .connect(owner)
+      .grantRole(
+        keccak256(toUtf8Bytes("STRATEGIES_MANAGER_ROLE")),
+        strategyManagercontract.target
+      );
     // get some WETH to supply
     const WETH = new ethers.Contract(WETHaddress, WETHabi);
     await WETH.connect(owner).deposit({ value: ethers.parseEther("10") });
@@ -210,16 +224,21 @@ describe("Bebra Coin", function () {
         await expect(
           await strategyManagercontract.connect(owner).getTotalPooledAmount()
         ).not.to.be.reverted;
-        console.log(
-          await posManagercontract.connect(owner).getAccountSnapshot()
-        );
-        console.log(
-          await posManagercontract1.connect(owner).getAccountSnapshot()
-        );
+        // console.log(
+        //   await posManagercontract.connect(owner).getAccountSnapshot()
+        // );
+        // console.log(
+        //   await posManagercontract1.connect(owner).getAccountSnapshot()
+        // );
       });
       it("withdraw", async function () {
-        const { posManagercontract, owner, strategyManagercontract, USDC } =
-          await loadFixture(deployManagerFixture);
+        const {
+          posManagercontract,
+          owner,
+          strategyManagercontract,
+          USDC,
+          posManagercontract1,
+        } = await loadFixture(deployManagerFixture);
         // console.log(await contract.connect(owner).getAccountSnapshot());
         await USDC.connect(owner).approve(
           strategyManagercontract.target,
@@ -228,8 +247,8 @@ describe("Bebra Coin", function () {
         await strategyManagercontract
           .connect(owner)
           .changeStrategies(
-            [posManagercontract.target],
-            [ethers.parseEther("1")]
+            [posManagercontract.target, posManagercontract1.target],
+            [ethers.parseEther("0.5"), ethers.parseEther("0.5")]
           );
         await expect(
           await strategyManagercontract
@@ -248,12 +267,12 @@ describe("Bebra Coin", function () {
         )
           .to.emit(strategyManagercontract, "Withdraw")
           .withArgs(owner.address, ethers.parseUnits("5", 6));
-        console.log(
-          await strategyManagercontract.connect(owner).getTotalPooledAmount()
-        );
-        console.log(
-          await strategyManagercontract.connect(owner).balanceOf(owner.address)
-        );
+        // console.log(
+        //   await strategyManagercontract.connect(owner).getTotalPooledAmount()
+        // );
+        // console.log(
+        //   await strategyManagercontract.connect(owner).balanceOf(owner.address)
+        // );
       });
       it("harvest", async function () {
         const {
@@ -262,6 +281,7 @@ describe("Bebra Coin", function () {
           strategyManagercontract,
           USDC,
           otherAccount,
+          posManagercontract1,
         } = await loadFixture(deployManagerFixture);
         // console.log(await contract.connect(owner).getAccountSnapshot());
         await USDC.connect(owner).approve(
@@ -275,8 +295,8 @@ describe("Bebra Coin", function () {
         await strategyManagercontract
           .connect(owner)
           .changeStrategies(
-            [posManagercontract.target],
-            [ethers.parseEther("1")]
+            [posManagercontract.target, posManagercontract1.target],
+            [ethers.parseEther("0.5"), ethers.parseEther("0.5")]
           );
         await expect(
           await strategyManagercontract
@@ -285,151 +305,53 @@ describe("Bebra Coin", function () {
         )
           .to.emit(strategyManagercontract, "Deposit")
           .withArgs(owner.address, ethers.parseUnits("10", 6));
-        await console.log(
-          "otherAccount balance",
-          await USDC.connect(otherAccount).balanceOf(otherAccount)
-        );
+        // await console.log(
+        //   "otherAccount balance",
+        //   await USDC.connect(otherAccount).balanceOf(otherAccount)
+        // );
         await strategyManagercontract
           .connect(otherAccount)
           .deposit(ethers.parseUnits("5", 6));
         await expect(
           await strategyManagercontract.connect(owner).getTotalPooledAmount()
         ).not.to.be.reverted;
-        console.log(
-          "totalAmountBeforeHarvest",
-          await strategyManagercontract.connect(owner).getTotalPooledAmount()
-        );
-        console.log(
-          "OwnerAmountBeforeHarvest",
-          await strategyManagercontract.connect(owner).balanceOf(owner.address)
-        );
-        console.log(
-          "StrategyBalanceBeforeHarvest",
-          await posManagercontract.connect(owner).getTotalAmount()
-        );
+        // console.log(
+        //   "totalAmountBeforeHarvest",
+        //   await strategyManagercontract.connect(owner).getTotalPooledAmount()
+        // );
+        // console.log(
+        //   "OwnerAmountBeforeHarvest",
+        //   await strategyManagercontract.connect(owner).balanceOf(owner.address)
+        // );
+        // console.log(
+        //   "StrategyBalanceBeforeHarvest",
+        //   await posManagercontract.connect(owner).getTotalAmount()
+        // );
+        // console.log(
+        //   "StrategyBalanceBeforeHarvest1",
+        //   await posManagercontract1.connect(owner).getTotalAmount()
+        // );
+
         await time.increase(360000);
         await expect(await strategyManagercontract.connect(owner).harvest()).not
           .to.be.reverted;
-        console.log(
-          "totalAmountAfterHarvest",
-          await strategyManagercontract.connect(owner).getTotalPooledAmount()
-        );
-        console.log(
-          "OwnerAmountAfterHarvest",
-          await strategyManagercontract.connect(owner).balanceOf(owner.address)
-        );
-        console.log(
-          "StrategyBalanceAfterHarvest",
-          await posManagercontract.connect(owner).getTotalAmount()
-        );
+        // console.log(
+        //   "totalAmountAfterHarvest",
+        //   await strategyManagercontract.connect(owner).getTotalPooledAmount()
+        // );
+        // console.log(
+        //   "OwnerAmountAfterHarvest",
+        //   await strategyManagercontract.connect(owner).balanceOf(owner.address)
+        // );
+        // console.log(
+        //   "StrategyBalanceAfterHarvest",
+        //   await posManagercontract.connect(owner).getTotalAmount()
+        // );
+        // console.log(
+        //   "StrategyBalanceAfterHarvest1",
+        //   await posManagercontract1.connect(owner).getTotalAmount()
+        // );
       });
-      //   it("calcutePosition", async function () {
-      //     const { contract, owner } = await loadFixture(deployManagerFixture);
-
-      //     await expect(
-      //       await contract
-      //         .connect(owner)
-      //         .calcPosition(ethers.parseUnits("1", 6), false)
-      //     ).not.to.be.reverted;
-      //   });
-
-      //   it("open position", async function () {
-      //     const { contract, owner, USDC } = await loadFixture(
-      //       deployManagerFixture
-      //     );
-      //     await contract.connect(owner).listSoToken();
-      //     await USDC.connect(owner).approve(
-      //       contract.target,
-      //       ethers.parseUnits("11", 6)
-      //     );
-      //     await expect(
-      //       await contract.connect(owner).openPosition(ethers.parseUnits("1", 6))
-      //     ).not.to.be.reverted;
-      //     // console.log(await contract.connect(owner).getAccountSnapshot());
-      //     await expect(
-      //       await contract.connect(owner).openPosition(ethers.parseUnits("1", 6))
-      //     ).not.to.be.reverted;
-      //     // console.log(await contract.connect(owner).getAccountSnapshot());
-      //   });
-
-      //   it("claim and reinvest", async function () {
-      //     const { contract, owner, USDC } = await loadFixture(
-      //       deployManagerFixture
-      //     );
-      //     await contract.connect(owner).listSoToken();
-      //     await USDC.connect(owner).approve(
-      //       contract.target,
-      //       ethers.parseUnits("100", 6)
-      //     );
-      //     await contract.connect(owner).openPosition(ethers.parseUnits("100", 6));
-      //     await time.increase(360000);
-      //     await expect(await contract.connect(owner).claimAndReinvest()).not.to.be
-      //       .reverted;
-      //   });
-
-      //   it("closePosition", async function () {
-      //     const { contract, owner, USDC } = await loadFixture(
-      //       deployManagerFixture
-      //     );
-      //     await contract.connect(owner).listSoToken();
-      //     await USDC.connect(owner).approve(
-      //       contract.target,
-      //       ethers.parseUnits("100", 6)
-      //     );
-      //     await contract.connect(owner).openPosition(ethers.parseUnits("100", 6));
-      //     await time.increase(360000);
-      //     await expect(
-      //       await contract
-      //         .connect(owner)
-      //         .closePosition(ethers.parseUnits("0.5", 18))
-      //     ).not.to.be.reverted;
-      //     await expect(
-      //       await contract
-      //         .connect(owner)
-      //         .closePosition(ethers.parseUnits("0.2", 18))
-      //     ).not.to.be.reverted;
-      //   });
-      //   it("triggerRebalance", async function () {
-      //     const { contract, owner, USDC } = await loadFixture(
-      //       deployManagerFixture
-      //     );
-      //     await contract.connect(owner).listSoToken();
-      //     await USDC.connect(owner).approve(
-      //       contract.target,
-      //       ethers.parseUnits("100", 6)
-      //     );
-      //     await contract.connect(owner).openPosition(ethers.parseUnits("100", 6));
-      //     // console.log(await contract.connect(owner).getAccountSnapshot());
-      //     await expect(
-      //       contract.connect(owner).triggerRebalance()
-      //     ).to.be.revertedWith("no need to rebalance");
-      //     await expect(
-      //       await contract
-      //         .connect(owner)
-      //         .setStrategyParams([
-      //           ethers.parseEther("0.65"),
-      //           ethers.parseEther("1.3"),
-      //           ethers.parseEther("1.35"),
-      //           ethers.parseEther("1.25"),
-      //         ])
-      //     ).not.to.be.reverted;
-      //     await expect(contract.connect(owner).triggerRebalance()).not.to.be
-      //       .reverted;
-      //     // console.log(await contract.connect(owner).getAccountSnapshot());
-      //     await expect(
-      //       await contract
-      //         .connect(owner)
-      //         .setStrategyParams([
-      //           ethers.parseEther("0.65"),
-      //           ethers.parseEther("1.1"),
-      //           ethers.parseEther("1.15"),
-      //           ethers.parseEther("1.05"),
-      //         ])
-      //     ).not.to.be.reverted;
-      //     await expect(contract.connect(owner).triggerRebalance()).not.to.be
-      //       .reverted;
-      //     // console.log(await contract.connect(owner).getAccountSnapshot());
-      //   });
     });
   });
 });

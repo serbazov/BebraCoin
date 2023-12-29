@@ -9,6 +9,12 @@ module.exports = {
     compilers: [
       {
         version: "0.8.20",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1000,
+          },
+        },
       },
     ],
   },
@@ -25,7 +31,7 @@ module.exports = {
     },
   },
   gasReporter: {
-    enabled: false,
+    enabled: true,
     gasPrice: 1,
     showTimeSpent: true,
     showMethodSig: true,
