@@ -1,33 +1,22 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
-const hre = require("hardhat");
-
-async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
-
-  const lockedAmount = hre.ethers.parseEther("0.001");
-
-  const lock = await hre.ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
-
-  await lock.waitForDeployment();
-
-  console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
-  );
-}
-
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+const { ethers } = require("hardhat");
+require("dotenv").config();
+// const comptrollerAddress = "0xDb0C52f1F3892e179a69b19aa25dA2aECe5006ac";
+const comptrollerAddress = "0x60CF091cD3f50420d50fD7f707414d0DF4751C58";
+// const veloRouterAddress = "0x9c12939390052919af3155f41bf4160fd3666a6f";
+const veloRouterAddress = "0xa062aE8A9c5e11aaA026fc2670B0D65cCc8B2858";
+const veloTokenAddress = "0x3c8B650257cFb5f272f799F5e2b4e65093a11a05";
+const SONNEaddress = "0x1DB2466d9F5e10D7090E7152B68d62703a2245F0";
+const unitrollerAddress = "0x60CF091cD3f50420d50fD7f707414d0DF4751C58";
+const veloFactory = "0xF1046053aa5682b4F9a81b5481394DA16BE5FF5a";
+const DAIaddress = "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1";
+const WETHaddress = "0x4200000000000000000000000000000000000006";
+const soDAIaddress = "0x5569b83de187375d43FBd747598bfe64fC8f6436";
+const soUSDCAddress = "0xEC8FEa79026FfEd168cCf5C627c7f486D77b765F";
+const soWETHAddress = "0xf7B5965f5C117Eb1B5450187c9DcFccc3C317e8E";
+const soOPAddress = "0x8cD6b19A07d754bF36AdEEE79EDF4F2134a8F571";
+const OPUSDCPoolToken = "0x0df083de449F75691fc5A36477a6f3284C269108";
+const OPUSDCGauge = "0x36691b39Ec8fa915204ba1e1A4A3596994515639";
+const WETHUSDCPoolToken = "0x0493Bf8b6DBB159Ce2Db2E0E8403E753Abd1235b";
+const WETHUSDCGauge = "0xE7630c9560C59CCBf5EEd8f33dd0ccA2E67a3981";
+const priceOracleAddress = "0xEFc0495DA3E48c5A55F73706b249FD49d711A502";
+const USDCAddress = "0x7F5c764cBc14f9669B88837ca1490cCa17c31607";
