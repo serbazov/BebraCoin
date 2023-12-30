@@ -55,7 +55,7 @@ During the strategy performing, it might be that price of the volatile asset cou
 
 ### Liquidity distribution
 
-$C F$ - Collateral factor, $I$ - our investment in $\$$ , $ h p$ - hedging percentage, $h f$ - health factor $(h f>1)$, $b$ - borrow amount in $\$$, $s$ - supply amount in $\$$, $L P$ - amount in the liquidity pool in $\$$.
+$C F$ - Collateral factor, $I$ - our investment in $ , $ h p$ - hedging percentage, $h f$ - health factor $(h f>1)$, $b$ - borrow amount in $, $s$ - supply amount in $, $L P$ - amount in the liquidity pool in $.
 
 We surely know how to calculate health factor:
 
@@ -95,17 +95,17 @@ Consider an investment of 1000$ to the velodrome/Sonne WETH/USDC instrument, col
 
 Using equations from above:
 
-$LP$ = 857.1 $\$$
+$LP$ = 857.1 $
 
-$b$ = 428.57 $\$$
+$b$ = 428.57 $
 
-$s$ = 571.5 $\$$
+$s$ = 571.5 $
 
 Ultimately, in order to get into position, funds flow would be following:
 
-1. Supply 571.5 $\$$ worth of USDC to the Sonne
-2. Borrow 428.57 $\$$ worth of WETH from Sonne
-3. Deposit 428.57 $\$$ worth of WETH and 428.5 $\$$ worth of USDC in to the Velodrome liquidity pool
+1. Supply 571.5 $ worth of USDC to the Sonne
+2. Borrow 428.57 $ worth of WETH from Sonne
+3. Deposit 428.57 $ worth of WETH and 428.5 $ worth of USDC in to the Velodrome liquidity pool
 
 ### Rebalancing mechanics
 
@@ -120,7 +120,7 @@ Rebalance is triggered whenever health factor reaches specified threshold either
 
 Actions to reabalance:
 
-1. Calculate total amount: current supply in $\$$ - current borrow in $\$$ + current LP in $\$$
+1. Calculate total amount: current supply in $ - current borrow in $ + current LP in $
 2. Using this total amount as Investment, calculate target borrow, supply using eqaitions above
 3. Calculate deltas: db = target borrow - current borrow , ds = target supply - current supply
 4. Unstake LP token from gauge and withdraw LP funds from pool
