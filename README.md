@@ -55,7 +55,7 @@ During the strategy performing, it might be that price of the volatile asset cou
 
 ### Liquidity distribution
 
-$C F$ - Collateral factor, $I$ - our investment in $ , $ h p$ - hedging percentage, $h f$ - health factor $(h f>1)$, $b$ - borrow amount in $, $s$ - supply amount in $, $L P$ - amount in the liquidity pool in $.
+$C F$ - Collateral factor, $I$ - our investment in $ , $h p$ - hedging percentage, $h f$ - health factor $(h f>1)$, $b$ - borrow amount in $, $s$ - supply amount in $, $L P$ - amount in the liquidity pool in $.
 
 We surely know how to calculate health factor:
 
@@ -79,8 +79,8 @@ Aftre doing some math stuff, the ultimate equations is following
 
 $$
 \begin{aligned}
-& L P=\frac{I}{1-\frac{h p}{2}\left[1-\frac{h f}{C F}\right]^{\prime}} \\
-& b=\frac{h p * I}{2-h p\left[1-\frac{h f}{C F}\right]^{\prime}} \\
+& L P=\frac{I}{1-\frac{h p}{2}\left[1-\frac{h f}{C F}\right]} \\
+& b=\frac{h p * I}{2-h p\left[1-\frac{h f}{C F}\right]} \\
 & s=\frac{h p * h f}{2 C F}\left[\frac{I}{1-\frac{h p}{2}\left(1-\frac{h f}{C F}\right)}\right]
 \end{aligned}
 $$
