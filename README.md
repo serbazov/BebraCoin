@@ -1,4 +1,4 @@
-![My Image](./pictures/name.jpg)
+![Image](./pictures/name.JPG)
 
 Bebracoin(BBR) is a collaterised rebase stablecoin backed by quasi delta-neutral strategies on Optimism chain.
 
