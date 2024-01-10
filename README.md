@@ -151,13 +151,17 @@ coming soon
 
 ## Smart-contracts breakdown
 
-1. BebraCoin.sol
-2. StrategyManager.sol
-3. PositionManager.sol
+| Contract                                                                                                       | Purpose                                                                                                            |
+| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| [contracts/BebraCoin.sol](https://github.com/serbazov/BebraCoin/blob/main/contracts/BebraCoin.sol)             | Main contract that handle core logic of BBR token, inspired by stETH from Lido                                     |
+| [contracts/StrategyManager.sol](https://github.com/serbazov/BebraCoin/blob/main/contracts/StrategyManager.sol) | This contract is responsible for strategies control(adding, changing weights, etc), inherits Bebra for ease of use |
+| [contracts/PositionManager.sol](https://github.com/serbazov/BebraCoin/blob/main/contracts/PositionManager.sol) | Delta neutral strategy logic contract                                                                              |
+
+Any strategy could be used as collateral if it's code satisfies [contracts/IPositionManager.sol](https://github.com/serbazov/BebraCoin/blob/main/contracts/IPositionManager.sol)
 
 ## Current status
 
-Because of all the calculations done on-chain operation gas costs for this protocol is too high just to operate for my funds even in Optimism chain.
+Because of all the calculations done on-chain operation gas costs for this protocol is too high($5 to each claim) just to operate for my funds even in Optimism chain. Testnet deploy coming soon.
 
 Strategies breakdown:
 
