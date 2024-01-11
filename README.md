@@ -10,11 +10,11 @@ Bebracoin(BBR) is a collaterised rebase stablecoin backed by quasi delta-neutral
 
 ## Quasi delta-neutral strategies
 
-This strategies involves depositing liquidity into lending supply and volatile liquidity pool(volatile asset/stable asset), then hedging this position by borrowing volatile asset from lending market.
+This strategies involves supplying liquidity to lending and depositing into liquidity pool(volatile asset/stable asset), then hedging this position by borrowing volatile asset from lending market.
 
 ### Strategy mechanics
 
-In order to maintain delta-neutrality, we should maintain level of 100% hedging percentage so the amount of borrowed asset in dollar value would be the half of amount of liquidity in pool.
+In order to maintain delta-neutrality, we should maintain level of 100% hedging so the amount of borrowed asset in dollar value would be the half of amount of liquidity in pool.
 
 In standart pools with constant product formula, the liquidity position $L$ depending on price in pool $p$ changed like so:
 
@@ -63,13 +63,13 @@ $$
 h f=\frac{s}{b} * C F
 $$
 
-Assuming $100 \%$ hedging percentage when $\mathrm{hp}=1$ and borrow amount is the half of the LP amount:
+Assuming $100 \%$ hedging ($\mathrm{hp}=1$) and borrow amount is the half of the LP amount:
 
 $$
 h p=\frac{2 b}{L P}
 $$
 
-Investment, is the same after opening position and before:
+Investment is the same after opening position and before:
 
 $$
 I=s-b+L P
@@ -91,7 +91,7 @@ $$\begin{aligned} & L P=\frac{2 I}{1+\frac{h f}{C F}} \\ & b=\frac{I}{1+\frac{h 
 
 ### Initial funds allocation example
 
-Consider an investment of 1000$ to the velodrome/Sonne WETH/USDC instrument, collateral factor is 0.9, health factor 1.2 with a safe margin of 0.2 from liquidations.
+Consider an investment of 1000$ to the velodrome/Sonne WETH/USDC strategy, collateral factor is 0.9, health factor 1.2 with a safe margin of 0.2 from liquidations.
 
 Using equations from above:
 
@@ -157,7 +157,7 @@ coming soon
 | [contracts/StrategyManager.sol](https://github.com/serbazov/BebraCoin/blob/main/contracts/StrategyManager.sol) | This contract is responsible for strategies control(adding, changing weights, etc), inherits Bebra for ease of use |
 | [contracts/PositionManager.sol](https://github.com/serbazov/BebraCoin/blob/main/contracts/PositionManager.sol) | Delta neutral strategy logic contract                                                                              |
 
-Any strategy could be used as collateral if it's code satisfies [contracts/IPositionManager.sol](https://github.com/serbazov/BebraCoin/blob/main/contracts/IPositionManager.sol)
+Any strategy could be used as collateral for BBR if it's code satisfies [contracts/IPositionManager.sol](https://github.com/serbazov/BebraCoin/blob/main/contracts/IPositionManager.sol)
 
 ## Current status
 
